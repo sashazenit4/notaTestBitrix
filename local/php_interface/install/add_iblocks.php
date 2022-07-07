@@ -1,10 +1,12 @@
 <?php
+require_once $_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php";
 /**
  * This file contain iblock data
  */
+
 use Bitrix\Iblock;
 use Bitrix\Main\Config\Option;
-use Fusion\Tools\Console;
+use Aholin\Tools\Console;
 
 /**
  * Добавление типа инфоблока
@@ -18,10 +20,10 @@ $arIblockTypes = [
         "SORT" => 10,
         "LANG" => [
             "ru" => [
-                "NAME" => "Справочники"
+                "NAME" => "Чаты"
             ],
             "en" => [
-                "NAME" => "Reference"
+                "NAME" => "chats"
             ]
         ]
     ]
@@ -53,14 +55,29 @@ foreach ($arIblockTypes as $arIblockType) {
         die();
     }
 
-    Option::set("fusion", "REF_" . $arIblock["CODE"] . "_IBLOCK_ID", $iblockId);
+    Option::set("a-holin", "REF_" . $arIblock["CODE"] . "_IBLOCK_ID", $iblockId);
 }
 
 /**
  * Добавление инфоблоков
  */
 
-$arIblocks = [];
+$arIblocks = 
+[
+    [
+        "NAME" => "Общий чат",
+        "CODE" => "COMMON_CHAT",
+        "IBLOCK_TYPE_ID" => "chats",
+        "LIST_PAGE_URL" => "#SITE_DIR#chats/common/index.php",
+        "DETAIL_PAGE_URL" => "#SITE_DIR#chats/common/index.php?ID=#ID#",
+        "ELEMENTS" => [
+            [
+                'NAME' => 'Тестовое сообщение',
+                'CODE' => 'TEST_MESSAGE'
+            ],
+        ]
+    ],
+];
 
 $iblocks = \Bitrix\Iblock\IblockTable::getList([
     "select" => [
@@ -142,7 +159,7 @@ foreach ($arIblocks as $arIblock) {
         Console::write("Добавлен инфоблок " . $arIblock["NAME"], 'green');
     }
 
-    Option::set("fusion", "REF_" . $arIblock["CODE"] . "_IBLOCK_ID", $iblockId);
+    Option::set("a-holin", "REF_" . $arIblock["CODE"] . "_IBLOCK_ID", $iblockId);
 
     /**
      * Create section sections
