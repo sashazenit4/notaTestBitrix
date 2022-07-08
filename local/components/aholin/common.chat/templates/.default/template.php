@@ -3,7 +3,6 @@
 // var_dump($arResult);
 global $USER;
 ?>
-<h1>General chat</h1>
 
 <br>
 
@@ -19,7 +18,23 @@ global $USER;
                         <div class="message">
                             <p class="text"><?echo $value['NAME'];?></p>
                             <div class="info">
-                                <span class="sender"><?=$value['PROPERTY_SENDER_VALUE'];?></span>
+                                <span class="sender" onclick="setAnswer()">
+                                <?
+                                    ob_start();
+
+                                    $APPLICATION->IncludeComponent("bitrix:main.user.link", "", array(
+                                        "CACHE_TYPE" => "N",
+                                        "CACHE_TIME" => "7200",
+                                        "ID" => str_replace('user_', '', $value['PROPERTY_SENDER_VALUE']),
+                                        "NAME_TEMPLATE" => "#NOBR##LAST_NAME# #NAME##/NOBR#",
+                                        "SHOW_LOGIN" => "Y",
+                                        "USE_THUMBNAIL_LIST" => "Y"
+                                    ));
+                    
+                                $html = ob_get_contents();
+                                ob_get_clean();
+                                echo $html;
+                                ?></span>
                                     &nbsp
                                 <span class="date"><?=$value['DATE_CREATE'];?></span>
                             </div>

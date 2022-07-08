@@ -17,3 +17,11 @@ function newMessage(text, userId, iblockId) {
         } else console.log(response.data)
     });
 }
+
+function setAnswer() {
+    newText = document.querySelector(".sender .bx-user-info-name").innerText
+
+    toPaste = document.querySelector("#message")
+
+    toPaste.value = newText + ", "
+}

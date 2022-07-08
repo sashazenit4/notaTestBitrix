@@ -4,6 +4,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED!==true)die();
 use Bitrix\Main;
 use Bitrix\Main\Loader;
 use Bitrix\Main\Type\DateTime;
+use Bitrix\Main\UserTable;
 use	Bitrix\Iblock;
 use Bitrix\Main\Engine\Contract\Controllerable;
 
@@ -28,6 +29,11 @@ class CommonChat extends \CBitrixComponent implements Controllerable
         }
 
         $this->IncludeComponentTemplate();
+    }
+
+    public function getUserView($user)
+    {
+        return $user;
     }
 
     public function getMessages($iblockId)
@@ -69,13 +75,26 @@ class CommonChat extends \CBitrixComponent implements Controllerable
         $dateCreate = (new DateTime())->format('d.m.Y H:i:s');
 
         $elementId = $obIblockElement->Add($arFields);
+
+        $user = CUser::getList(
+            "id",
+            "asc",
+            [
+                "ID" => $fromUserId
+            ]
+        );
+
+        $user = $user->Fetch();
+
+        $userName = $user["LAST_NAME"] . " " . $user["NAME"];
+
         
         $obIblockElement->SetPropertyValues($elementId, $iblockId, $fromUserId, "SENDER");
 
         if ($elementId)
             return [
                 "text" => $text,
-                "fromUserId" => $fromUserId, 
+                "fromUserId" => $userName, 
                 "dateCreate" => $dateCreate
             ];
         else 
